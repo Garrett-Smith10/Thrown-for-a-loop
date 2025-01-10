@@ -68,22 +68,36 @@ Your one-stop shop for used sporting equipment!";
 
 
 Console.WriteLine(greeting);
-decimal totalValue = 0.0M;
-foreach (Product product in products)
+string choice = null;
+while (choice != "0")
 {
-    if (!product.Sold)
+    Console.WriteLine(@"Choose an option:
+                        0. Exit
+                        1. View All Products
+                        2. View Product Details
+                        3. View Latest Products");
+    choice = Console.ReadLine();
+    if (choice == "0")
     {
-        totalValue += product.Price;
+        Console.WriteLine("Goodbye!");
+    }
+    else if (choice == "1")
+    {
+        ListProducts();
+    }
+    else if (choice == "2")
+    {
+        ViewProductDetails();
+    }
+    else if (choice == "3")
+    {
+        ViewLatestProducts();
     }
 }
-Console.WriteLine($"Total inventory value: ${totalValue}");
 
-Console.WriteLine("Products:");
-
-for (int i = 0; i < products.Count; i++)
-{
-    Console.WriteLine($"{i + 1}. {products[i].Name}");
-}
+ void ViewProductDetails()
+ {
+    ListProducts();
 
 Product chosenProduct = null;
 
@@ -116,3 +130,45 @@ Console.WriteLine(@$"You chose: {chosenProduct.Name}, which costs { chosenProduc
  It is {now.Year - chosenProduct.ManufactureYear} years old. 
  It {(chosenProduct.Sold ? "is not available " : $"has been in stock for {timeInStock.Days} days.")}
  The Condition rating is {chosenProduct.Condition}/5.");
+ }
+
+ void ListProducts()
+ {
+    decimal totalValue = 0.0M;
+    foreach (Product product in products)
+    {
+        if (!product.Sold)
+        {
+            totalValue += product.Price;
+        }
+    }
+    Console.WriteLine($"Total inventory value: ${totalValue}");
+    Console.WriteLine("Products:");
+    for (int i = 0; i < products.Count; i++)
+    {
+        Console.WriteLine($"{i + 1}. {products[i].Name}");
+    }
+ }
+
+ void ViewLatestProducts()
+{
+    // create a new empty List to store the latest products
+    List<Product> latestProducts = new List<Product>();
+    // Calculate a DateTime 90 days in the past
+    DateTime threeMonthsAgo = DateTime.Now - TimeSpan.FromDays(90);
+    //loop through the products
+    foreach (Product product in products)
+    {
+        //Add a product to latestProducts if it fits the criteria
+        if (product.StockDate > threeMonthsAgo && !product.Sold)
+        {
+            latestProducts.Add(product);
+        }
+    }
+    // print out the latest products to the console 
+    for (int i = 0; i < latestProducts.Count; i++)
+    {
+        Console.WriteLine($"{i + 1}. {latestProducts[i].Name}");
+    }
+}
+
